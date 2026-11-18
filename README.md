@@ -121,3 +121,4 @@ Per aggiungere la pagina di OpenAI Academy, salvala dal browser nella cartella `
 ## Licenza
 
 [MIT](LICENSE) © 2026 Max Brandini
+# Skill-Creator
