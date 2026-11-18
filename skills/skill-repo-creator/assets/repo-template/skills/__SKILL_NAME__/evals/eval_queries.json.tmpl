@@ -1,0 +1,10 @@
+[
+  { "query": "[[TODO: should trigger: explicit request that names the task]]", "should_trigger": true },
+  { "query": "[[TODO: should trigger: describes the need without naming the task]]", "should_trigger": true },
+  { "query": "[[TODO: should trigger: casual wording, in the user's language]]", "should_trigger": true },
+  { "query": "[[TODO: should trigger: the task buried inside a longer request]]", "should_trigger": true },
+  { "query": "[[TODO: should NOT trigger: near miss that shares keywords but needs something else]]", "should_trigger": false },
+  { "query": "[[TODO: should NOT trigger: adjacent task handled by another skill or by no skill]]", "should_trigger": false },
+  { "query": "[[TODO: should NOT trigger: question about the topic, not a request to do the task]]", "should_trigger": false },
+  { "query": "[[TODO: should NOT trigger: same domain, different deliverable]]", "should_trigger": false }
+]

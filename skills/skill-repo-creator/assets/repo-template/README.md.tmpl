@@ -1,0 +1,80 @@
+# {{SKILL_TITLE}}
+
+[[TODO: Two or three sentences for humans: the repetitive task this skill automates and the result it delivers.]]
+
+| | |
+|---|---|
+| Skill name | `{{SKILL_NAME}}` |
+| Format | [Agent Skills open standard](https://agentskills.io) |
+| Primary platform | [[TODO: the platform this skill was researched and tested for]] |
+| License | MIT |
+
+## Install
+
+The skill is the folder `skills/{{SKILL_NAME}}/`. Copy it into your agent's skills directory:
+
+| Agent | Project scope | User scope |
+|---|---|---|
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| OpenAI Codex | `.agents/skills/` | `~/.agents/skills/` |
+| OpenCode | `.opencode/skills/` | `~/.config/opencode/skills/` |
+| Google Antigravity | `.agents/skills/` | `~/.gemini/config/skills/` |
+
+Paths as documented by each vendor on {{SNAPSHOT_DATE}}.
+
+```bash
+# Example: user scope, Claude Code
+cp -R skills/{{SKILL_NAME}} ~/.claude/skills/
+```
+
+Other ways to install:
+
+- **claude.ai**: zip the folder (`cd skills && zip -r ../{{SKILL_NAME}}.zip {{SKILL_NAME}}`) and upload the zip as a custom skill in the claude.ai settings. Requires a paid plan with code execution enabled.
+- **Many agents at once**: `npx skills add <owner>/<repo>` once this repository is on GitHub, or `npx skills add .` from a local clone. This uses the community [`skills` CLI](https://github.com/vercel-labs/skills).
+
+[[TODO: Notes for the primary platform, verified in its official docs (plan requirements, limits, features that are unavailable). Delete this line if there are none.]]
+
+## Use
+
+[[TODO: How to trigger the skill: two or three natural-language requests that activate it, and what the user must provide.]]
+
+## Test prompts
+
+Run these in a fresh session after installing:
+
+1. [[TODO: typical request, then the expected result]]
+2. [[TODO: the same task with different wording or detail, then the expected result]]
+3. [[TODO: an edge case such as a missing input, then the expected result]]
+
+## Requirements
+
+[[TODO: Runtime, packages and network access the skill needs, or "None: instruction-only skill."]]
+
+## Repository layout
+
+`skills/{{SKILL_NAME}}/` is the skill, the only folder an agent needs.
+
+```text
+skills/{{SKILL_NAME}}/
+  SKILL.md                  instructions and metadata
+  evals/                    test cases and trigger queries
+scripts/validate_skill.py   validator, run before every commit
+AGENTS.md                   rules for agents maintaining this repository
+CHANGELOG.md                version history
+```
+
+## Development
+
+```bash
+python3 scripts/validate_skill.py
+```
+
+The rules for changing the skill, including how to keep it agent-agnostic, are in [AGENTS.md](AGENTS.md).
+
+## Official sources
+
+[[TODO: One line per official page consulted: the link and the recommendation this skill relies on. State anything that could not be verified.]]
+
+## License
+
+[MIT](LICENSE) © {{YEAR}} {{AUTHOR}}

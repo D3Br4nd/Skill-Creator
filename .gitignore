@@ -1,0 +1,30 @@
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Eval run workspaces and packaged builds
+*-workspace/
+dist/
+*.zip
+
+# Agent-local state
+.claude/settings.local.json

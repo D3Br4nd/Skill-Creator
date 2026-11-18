@@ -1,0 +1,80 @@
+# {{SKILL_TITLE}}
+
+[[TODO: Due o tre frasi per le persone: il compito ripetitivo che questa skill automatizza e il risultato che consegna.]]
+
+| | |
+|---|---|
+| Nome della skill | `{{SKILL_NAME}}` |
+| Formato | [Standard aperto Agent Skills](https://agentskills.io) |
+| Piattaforma principale | [[TODO: la piattaforma per cui la skill è stata studiata e provata]] |
+| Licenza | MIT |
+
+## Installazione
+
+La skill è la cartella `skills/{{SKILL_NAME}}/`. Copiala nella cartella delle skill del tuo agente:
+
+| Agente | Solo nel progetto | Per tutto l'utente |
+|---|---|---|
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| OpenAI Codex | `.agents/skills/` | `~/.agents/skills/` |
+| OpenCode | `.opencode/skills/` | `~/.config/opencode/skills/` |
+| Google Antigravity | `.agents/skills/` | `~/.gemini/config/skills/` |
+
+Percorsi indicati nella documentazione di ciascun produttore al {{SNAPSHOT_DATE}}.
+
+```bash
+# Esempio: per tutto l'utente, Claude Code
+cp -R skills/{{SKILL_NAME}} ~/.claude/skills/
+```
+
+Altri modi per installarla:
+
+- **claude.ai**: comprimi la cartella (`cd skills && zip -r ../{{SKILL_NAME}}.zip {{SKILL_NAME}}`) e carica lo zip come skill personalizzata nelle impostazioni di claude.ai. Serve un piano a pagamento con l'esecuzione del codice attiva.
+- **Più agenti in un colpo solo**: `npx skills add <owner>/<repo>` quando la repo è su GitHub, oppure `npx skills add .` da una copia locale. Il comando usa la [CLI `skills`](https://github.com/vercel-labs/skills), un progetto della community.
+
+[[TODO: Note sulla piattaforma principale, verificate nella documentazione ufficiale (piani richiesti, limiti, funzioni non disponibili). Elimina questa riga se non ce ne sono.]]
+
+## Uso
+
+[[TODO: Come attivare la skill: due o tre richieste in linguaggio naturale che la fanno partire, e che cosa deve fornire l'utente.]]
+
+## Prompt di prova
+
+Provali in una sessione nuova, dopo l'installazione:
+
+1. [[TODO: richiesta tipica, poi il risultato atteso]]
+2. [[TODO: lo stesso compito con parole o dettagli diversi, poi il risultato atteso]]
+3. [[TODO: un caso limite, per esempio un dato mancante, poi il risultato atteso]]
+
+## Requisiti
+
+[[TODO: Runtime, pacchetti e accesso alla rete necessari, oppure "Nessuno: la skill contiene solo istruzioni."]]
+
+## Struttura della repo
+
+`skills/{{SKILL_NAME}}/` è la skill, l'unica cartella che serve all'agente.
+
+```text
+skills/{{SKILL_NAME}}/
+  SKILL.md                  istruzioni e metadati
+  evals/                    casi di test e richieste di attivazione
+scripts/validate_skill.py   validatore, da eseguire prima di ogni commit
+AGENTS.md                   regole per gli agenti che mantengono la repo
+CHANGELOG.md                storico delle versioni
+```
+
+## Sviluppo
+
+```bash
+python3 scripts/validate_skill.py
+```
+
+Le regole per modificare la skill, comprese quelle per mantenerla indipendente dall'agente, sono in [AGENTS.md](AGENTS.md).
+
+## Fonti ufficiali
+
+[[TODO: Una riga per ogni pagina ufficiale consultata: il link e la raccomandazione su cui si basa la skill. Indica ciò che non è stato possibile verificare.]]
+
+## Licenza
+
+[MIT](LICENSE) © {{YEAR}} {{AUTHOR}}
