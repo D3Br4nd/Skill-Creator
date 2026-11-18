@@ -60,14 +60,14 @@ Agents load only the name and the description at startup, so the description alo
 - Put the key use case and the trigger words first. Agents shorten or drop descriptions when many skills are installed. [O][C]
 - Describe the user's intent, not the implementation. Name the contexts where the skill applies, including requests that do not mention the domain by name. [E]
 - When near misses exist, say what the skill does not cover. [O][E]
-- Use the words the user would type, in the user's language.
+- Use the words the user would type; when the user works in a language other than English, include natural trigger phrases in that language alongside the English description.
 - Stay within 1024 characters, and use square brackets instead of angle brackets. [S][A][C]
 
 ## Body
 
 - Assume the agent is already capable. Add only what it does not know, and make each paragraph justify its token cost. [A]
 - Keep the body under 500 lines, about 5000 tokens. [S][A]
-- Match the freedom to the task. Give text guidance when many approaches work, a parameterised pattern when one is preferred, and an exact command when the operation is fragile or the sequence matters. [A]
+- Match the freedom to the task. Give text guidance when many approaches work, a parameterized pattern when one is preferred, and an exact command when the operation is fragile or the sequence matters. [A]
 - Write imperative steps with explicit inputs and outputs. [O]
 - Explain why a rule exists. Reasons work better than "ALWAYS" and "NEVER". [E]
 - Give one default instead of a menu of options, with an escape hatch only where it is needed. [A]
@@ -99,7 +99,7 @@ Agents load a skill in three stages: metadata at startup (about 100 tokens), the
 
 ## Scripts
 
-- Instructions only is the default. Add a script when the behaviour must be deterministic or needs external tooling. [O][A]
+- Instructions only is the default. Add a script when the behavior must be deterministic or needs external tooling. [O][A]
 - Handle error conditions inside the script instead of leaving them to the agent. [A]
 - Justify every constant in a comment. [A]
 - Say whether the agent should run the script or read it. Running is the usual case; tell the agent to call `--help` rather than read the source. [A][G]

@@ -140,6 +140,11 @@ class FrontmatterErrorTests(TempDirTest):
         (skill / "SKILL.md").write_text("\n---\nname: demo-skill\ndescription: %s\n---\nBody\n" % DESCRIPTION, encoding="utf-8")
         self.assert_error(run(VALIDATE, skill), "line 1 must be '---'")
 
+    def test_utf8_bom_is_rejected(self):
+        skill = make_skill(self.tmp)
+        (skill / "SKILL.md").write_text("\ufeff---\nname: demo-skill\ndescription: %s\n---\nBody\n" % DESCRIPTION, encoding="utf-8")
+        self.assert_error(run(VALIDATE, skill), "UTF-8 byte-order mark")
+
 
 class ContentTests(TempDirTest):
     def test_fewer_than_three_evals(self):
@@ -204,7 +209,7 @@ class ScaffoldTests(TempDirTest):
                 path.write_text(re.sub(r"\[\[TODO[^\]]*\]\]", "Filled in.", text), encoding="utf-8")
 
     def test_scaffold_fails_validation_until_filled(self):
-        result = self.scaffold("--lang", "it")
+        result = self.scaffold()
         self.assertEqual(result.returncode, 0, result.stderr)
         repo = self.tmp / "weekly-sales-report"
         for expected in (
@@ -215,8 +220,8 @@ class ScaffoldTests(TempDirTest):
             self.assertTrue((repo / expected).is_file(), expected)
         self.assertTrue((repo / ".git").is_dir())
         readme = (repo / "README.md").read_text(encoding="utf-8")
-        self.assertIn("## Installazione", readme)
-        self.assertRegex(readme, r"produttore al \d{4}-\d{2}-\d{2}\.")
+        self.assertIn("## Install", readme)
+        self.assertRegex(readme, r"vendor on \d{4}-\d{2}-\d{2}\.")
         skill_md = (repo / "skills" / "weekly-sales-report" / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn('author: "Test \\"Q\\" Author"', skill_md)
         self.assertIn('Copyright (c)', (repo / "LICENSE").read_text(encoding="utf-8"))
@@ -233,9 +238,14 @@ class ScaffoldTests(TempDirTest):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("0 error(s)", result.stdout)
 
-    def test_english_readme_is_default(self):
-        self.assertEqual(self.scaffold().returncode, 0)
-        self.assertIn("## Install", (self.tmp / "weekly-sales-report" / "README.md").read_text(encoding="utf-8"))
+    def test_multilingual_trigger_phrases_pass_strict_validation(self):
+        description = (
+            'Turns a weekly sales CSV into a markdown report. Use when the user asks for '
+            'weekly sales totals, including "report vendite", "posso generare il report", or "informe semanal".'
+        )
+        frontmatter = "name: demo-skill\ndescription: >-\n  %s\n" % description
+        result = run(VALIDATE, make_skill(self.tmp, frontmatter=frontmatter), "--strict")
+        self.assertEqual(result.returncode, 0, result.stdout)
 
     def test_repo_level_checks(self):
         self.scaffold()

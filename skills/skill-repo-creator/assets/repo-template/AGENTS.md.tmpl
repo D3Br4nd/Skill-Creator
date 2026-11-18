@@ -13,7 +13,7 @@ This repository packages one Agent Skill, `skills/{{SKILL_NAME}}/`, written to t
 ## Before every commit
 
 1. Run `python3 scripts/validate_skill.py`. Fix every ERROR. Fix each WARN, or note in the commit message why it is acceptable.
-2. When behaviour changes, bump `metadata.version` in `SKILL.md` and add a `CHANGELOG.md` entry.
+2. When behavior changes, bump `metadata.version` in `SKILL.md` and add a `CHANGELOG.md` entry.
 3. When instructions change, re-run the test prompts from `README.md` in a fresh session.
 
 Do not push, publish or install the skill outside this repository unless the user asks.
@@ -29,4 +29,4 @@ The skill must work unchanged in every agent that supports the standard.
 5. **Paths.** Relative to the skill folder, with forward slashes. Link every bundled file directly from `SKILL.md`, one level deep.
 6. **Scripts.** Self-contained, run through their interpreter (`python3 scripts/y.py`), with `--help` and specific error messages. State runtime, packages and network needs in `compatibility`, because some agents run skills with no network and no package installation.
 7. **Content.** No time-sensitive statements, and one term per concept.
-8. **Evals.** Keep at least three test cases in `evals/evals.json` and update them when behaviour changes.
+8. **Evals.** Keep at least three test cases in `evals/evals.json` and update them when behavior changes.

@@ -1,124 +1,129 @@
 # Skill-Creator
 
-Una repo per creare skill per agenti AI. Tu dai due informazioni, la piattaforma e il compito ripetitivo, e ottieni una repo git completa con dentro la skill, pronta da installare.
+A skill factory repository for AI agents. Provide two inputs — the target platform and the repetitive task — and get a complete, standalone git repository containing a portable skill ready to install.
 
-Ogni skill segue lo [standard aperto Agent Skills](https://agentskills.io) e le regole ufficiali di Anthropic, OpenAI, Google Antigravity e OpenCode. Per questo funziona senza modifiche su agenti diversi.
+Every skill follows the [Agent Skills open standard](https://agentskills.io) and the official guidelines of Anthropic, OpenAI, Google Antigravity, and OpenCode, so it works unchanged across agents.
 
-## Come si usa
+## Languages
 
-Apri questa cartella con il tuo agente (Claude Code, Codex, OpenCode, Antigravity) e scrivi la richiesta. Per esempio:
+The repository base and all agent-facing files (`SKILL.md`, `references/`, `AGENTS.md`, scripts, templates) stay in English so generated skills remain portable and consistent. You can prompt the agent in **any language** (English, Italian, Spanish, French, German, Japanese, and more): questions, the generated `README.md`, and the final delivery report match your language, and natural trigger phrases in your language are added to the skill's `description` alongside the English wording.
 
-> Piattaforma: Claude Code. Compito: ogni lunedì trasformo l'export CSV delle vendite in un report con i totali per categoria.
+## How to use
 
-L'agente segue le istruzioni di `skills/skill-repo-creator/SKILL.md`:
+Clone and open this folder with your agent (Claude Code, Codex, OpenCode, Antigravity) and send your request. For example:
 
-1. Controlla la documentazione ufficiale della piattaforma.
-2. Progetta la skill e scrive tre casi di test.
-3. Crea la repo della skill nella cartella accanto a questa: `../<nome-skill>/`.
-4. Scrive i contenuti ed esegue il validatore finché non restano errori.
-5. Prova la skill, fa il commit locale e ti consegna il resoconto in cinque parti: analisi tecnica, skill completa, installazione, test pratici, fonti ufficiali.
+> Platform: Claude Code. Task: every Monday I turn the weekly sales CSV export into a markdown report with category totals.
 
-L'agente non fa push, non crea repo remote e non installa nulla nei tuoi agenti, a meno che tu non lo chieda.
+The agent follows the workflow in `skills/skill-repo-creator/SKILL.md`:
 
-Se hai creato la cartella `.claude/skills` a sessione già aperta, in Claude Code esegui `/reload-skills` per far comparire la skill.
+1. Checks the target platform's live official documentation.
+2. Designs the skill and drafts three evaluation cases.
+3. Scaffolds a standalone git repository beside this one: `../<skill-name>/`.
+4. Writes the content and runs the validator until 0 errors remain.
+5. Tests the skill, creates one local commit, and delivers a five-part report: technical analysis, complete skill, installation and settings, practical tests, and official sources.
 
-## Che cosa contiene ogni repo generata
+The agent never pushes, creates a remote repository, or installs anything into your agents unless you ask.
+
+If you add a `.claude/skills` directory during an active Claude Code session, run `/reload-skills` so the new skill appears (or `/skills reload` in the Antigravity CLI).
+
+## What each generated repository contains
 
 ```text
-<nome-skill>/
-├── skills/<nome-skill>/
-│   ├── SKILL.md              la skill: istruzioni e metadati
-│   └── evals/                casi di test e richieste di attivazione
-├── scripts/validate_skill.py validatore, da eseguire prima di ogni commit
-├── README.md                 a cosa serve, come si installa, prompt di prova, fonti
-├── AGENTS.md                 regole per restare indipendenti dall'agente
-├── CLAUDE.md                 importa AGENTS.md per Claude Code
+<skill-name>/
+├── skills/<skill-name>/
+│   ├── SKILL.md                   the skill: instructions and metadata
+│   └── evals/                     test cases and trigger queries
+├── scripts/validate_skill.py      validator, run before every commit
+├── README.md                      purpose, install steps, test prompts, sources
+├── AGENTS.md                      rules for keeping the skill agent-agnostic
+├── CLAUDE.md                      imports AGENTS.md for Claude Code
 ├── CHANGELOG.md
-├── LICENSE                   MIT
+├── LICENSE                        MIT
 ├── .gitignore
-├── .claude/skills/<nome-skill>   link alla skill, per provarla subito
-└── .agents/skills/<nome-skill>   link alla skill, per provarla subito
+├── .claude/skills/<skill-name>    symlink to the skill for in-repo testing
+└── .agents/skills/<skill-name>    symlink to the skill for in-repo testing
 ```
 
-L'agente installa solo la cartella `skills/<nome-skill>/`. Tutto il resto è documentazione e strumenti.
+Agents install only `skills/<skill-name>/`. Everything outside it is documentation and tooling.
 
-## Le regole che ogni skill rispetta
+## Rules every skill follows
 
-- **Frontmatter portabile.** Solo i sei campi dello standard: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`.
-- **Nome.** Lettere minuscole, numeri e trattini, al massimo 64 caratteri, uguale al nome della cartella, senza le parole `anthropic` e `claude`.
-- **Descrizione.** In terza persona, dice che cosa fa la skill e quando usarla, al massimo 1024 caratteri.
-- **Corpo.** Meno di 500 righe, senza sintassi, strumenti o percorsi legati a un solo agente.
-- **Struttura fissa.** Obiettivo, dati in ingresso, regole, procedura, formato di uscita, controlli di qualità, eccezioni, esempi.
-- **Test.** Almeno tre casi di test e una serie di richieste che devono, o non devono, attivare la skill.
-- **Licenza MIT.**
+- **Portable frontmatter.** Only the six fields defined by the open standard: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`.
+- **Name.** Lowercase letters, digits, and single hyphens, at most 64 characters, matching the folder name, without the reserved words `anthropic` or `claude`.
+- **Description.** Third person, stating what the skill does and when to use it, at most 1024 characters, no angle brackets.
+- **Body.** Under 500 lines, with no syntax, tool names, or install paths tied to a single agent.
+- **Standard structure.** Goal, inputs, operating rules, workflow, output format, quality checks, edge cases, examples.
+- **Evals.** At least three test cases and a set of trigger queries mixing positive matches and near misses.
+- **License.** MIT.
 
-Il validatore controlla queste regole e blocca la consegna finché ci sono errori. Il dettaglio è in `skills/skill-repo-creator/references/`:
+The validator enforces these rules and blocks delivery while errors remain. Full details live in `skills/skill-repo-creator/references/`:
 
-| File | Contenuto |
+| File | Contents |
 |---|---|
-| `authoring-rules.md` | Come scrivere nome, descrizione, corpo, script e test, con la fonte di ogni regola |
-| `portability.md` | Le regole per restare indipendenti dall'agente |
-| `platforms.md` | Dove ogni piattaforma installa le skill e quali limiti ha, con la data di verifica |
+| `authoring-rules.md` | How to write names, descriptions, bodies, scripts, and evals, with the source of each rule |
+| `portability.md` | Rules for keeping skills independent of any single agent |
+| `platforms.md` | Where each platform installs skills and which limits apply, with verification dates |
 
-## Struttura di questa repo
+## Repository structure
 
 ```text
 Skill-Creator/
 ├── skills/skill-repo-creator/
-│   ├── SKILL.md                  la procedura che l'agente segue
-│   ├── references/               regole di scrittura, portabilità, piattaforme
-│   ├── scripts/                  scaffold_skill_repo.py e validate_skill.py
-│   ├── assets/repo-template/     i modelli dei file di ogni repo generata
-│   └── evals/                    casi di test di questa skill
-├── tests/                        test automatici dei due script
-├── fonti/                        l'elenco delle fonti ufficiali
-├── AGENTS.md                     istruzioni per l'agente che lavora qui
-└── CLAUDE.md                     importa AGENTS.md per Claude Code
+│   ├── SKILL.md                   workflow the agent follows
+│   ├── references/                authoring, portability, and platform references
+│   ├── scripts/                   scaffold_skill_repo.py and validate_skill.py
+│   ├── assets/repo-template/      English base templates for generated repositories
+│   └── evals/                     test cases and trigger queries for this skill
+├── tests/                         automated unit tests for both scripts
+├── sources/                       list of official vendor documentation links
+├── AGENTS.md                      instructions for agents working in this repo
+├── CLAUDE.md                      imports AGENTS.md for Claude Code
+├── .claude/skills/skill-repo-creator   symlink to the skill for in-repo use
+└── .agents/skills/skill-repo-creator   symlink to the skill for in-repo use
 ```
 
-## Comandi utili
+## Useful commands
 
 ```bash
-# Controllare questa repo
+# Validate this repository
 python3 skills/skill-repo-creator/scripts/validate_skill.py .
 
-# Eseguire i test degli script
+# Run the script test suite
 python3 -B -m unittest discover -s tests
 
-# Creare a mano lo scheletro di una nuova repo
+# Manually scaffold a new skill repository
 python3 skills/skill-repo-creator/scripts/scaffold_skill_repo.py \
-  --name nome-skill --description "Che cosa fa. Use when ..." --dest .. --lang it
+  --name skill-name --description "What it does. Use when ..." --dest ..
 
-# Controllare una repo generata
-python3 ../nome-skill/scripts/validate_skill.py
+# Validate a generated repository
+python3 ../skill-name/scripts/validate_skill.py
 ```
 
-## Usare la skill fuori da questa cartella
+## Using the skill outside this folder
 
-Per creare skill da qualsiasi progetto, copia la cartella della skill tra quelle del tuo agente. Per Claude Code:
+To create skills from any project, copy `skills/skill-repo-creator` into your agent's global skills folder. For Claude Code:
 
 ```bash
 cp -R skills/skill-repo-creator ~/.claude/skills/
 ```
 
-I percorsi degli altri agenti sono in `skills/skill-repo-creator/references/platforms.md`.
+Install paths for other agents (OpenAI Codex, OpenCode, Google Antigravity, and more) are listed in `skills/skill-repo-creator/references/platforms.md`. You can also install across multiple agents at once with the community [`skills` CLI](https://github.com/vercel-labs/skills) (`npx skills add . -g` from a local clone, or `npx skills add <owner>/<repo> -g` from GitHub).
 
-## Fonti
+## Sources
 
-L'elenco di partenza è in `fonti/links-best-practices.md`. Stato della verifica al 18 novembre 2026:
+The starting list of official documentation links is in `sources/links-best-practices.md`. Verification status as of November 18, 2026:
 
-| Fonte | Stato |
+| Source | Status |
 |---|---|
-| [OpenCode: skills](https://opencode.ai/docs/skills/) | Letta |
-| [Google Antigravity: skills](https://antigravity.google/docs/skills/) | Letta |
-| [Anthropic: best practice per le skill](https://platform.claude.com/docs/it/agents-and-tools/agent-skills/best-practices) | Letta |
-| [OpenAI Academy: skills](https://openai.com/academy/skills/) | Non letta: la pagina risponde con errore 403 alle richieste automatiche |
+| [OpenCode: skills](https://opencode.ai/docs/skills/) | Verified |
+| [Google Antigravity: skills](https://antigravity.google/docs/skills/) | Verified |
+| [Anthropic: skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) | Verified |
+| [OpenAI Academy: skills](https://openai.com/academy/skills/) | Unverified: returned HTTP 403 to automated requests |
 
-Per OpenAI le regole vengono dalla documentazione ufficiale [Build skills](https://learn.chatgpt.com/docs/build-skills). Le altre fonti lette sono la [specifica Agent Skills](https://agentskills.io/specification), le sue guide su [valutazione](https://agentskills.io/skill-creation/evaluating-skills) e [descrizioni](https://agentskills.io/skill-creation/optimizing-descriptions), e la documentazione di [Claude Code](https://code.claude.com/docs/en/skills).
+OpenAI rules were verified against the official [Build skills](https://learn.chatgpt.com/docs/build-skills) documentation. Additional verified sources include the [Agent Skills specification](https://agentskills.io/specification), its guides on [evaluating skills](https://agentskills.io/skill-creation/evaluating-skills) and [optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions), and the [Claude Code skills](https://code.claude.com/docs/en/skills) documentation.
 
-Per aggiungere la pagina di OpenAI Academy, salvala dal browser nella cartella `fonti/` e chiedi all'agente di aggiornare le regole.
+To incorporate the OpenAI Academy page, save a copy from a browser into `sources/` and ask the agent to update the references.
 
-## Licenza
+## License
 
 [MIT](LICENSE) © 2026 Max Brandini
-# Skill-Creator

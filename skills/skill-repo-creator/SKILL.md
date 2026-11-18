@@ -5,8 +5,8 @@ description: >-
   (SKILL.md, evals, README, MIT LICENSE, .gitignore, AGENTS.md, validator), after checking
   the target platform's official documentation. Use when the user asks to create, build,
   scaffold or package a new skill, or to turn a repetitive task into a reusable skill for
-  any AI platform or coding agent, including Italian requests such as "crea una skill",
-  "nuova skill", "voglio una skill per" or "automatizza questo compito".
+  any AI platform or coding agent, in any language. Do not use to install, debug or run
+  an existing skill.
 license: MIT
 compatibility: Requires Python 3.8+ and git. Web access is needed to verify official platform documentation.
 metadata:
@@ -36,7 +36,7 @@ If one is missing, ask for it (for both in a single message when both are missin
 - **One skill, one job.** Unrelated tasks become separate skills in separate repositories.
 - **Lean.** Write instructions only, unless an operation is fragile or must be deterministic; then bundle a script. Add only what the agent does not already know.
 - **Few exchanges.** The finished skill must do its task with the fewest possible questions to its user, and return the same output structure every time.
-- **Languages.** Use the user's language for everything the user reads: questions, the README and the final report. Write agent-facing files (`SKILL.md`, references, `AGENTS.md`) in English unless the user asks otherwise, and put trigger phrases in the user's language in the description.
+- **Languages.** Work in whatever language the user writes in: use the user's language for questions, the generated README (unless the user prefers English) and the final report. Keep all agent-facing and repository-base files (`SKILL.md`, `references/`, `AGENTS.md`, `CHANGELOG.md`, scripts) in English unless the user explicitly asks otherwise. When the user works in a language other than English, include natural trigger phrases in that language in the skill's `description` alongside the English wording.
 - **Stay local.** Create and commit the repository locally. Push, create a remote or install the skill into the user's agents only when asked.
 
 ## Workflow
@@ -82,10 +82,9 @@ python3 scripts/scaffold_skill_repo.py --name <skill-name> --description "<descr
 ```
 
 - `--dest`: the directory the user named; otherwise the one set in the project's instruction file; otherwise the current directory. A skill repository is standalone, so the script refuses a destination inside a git repository. In that case use a folder outside it, usually the parent of the current repository.
-- `--lang it`: README in Italian (the default is `en`).
 - `--author "<name>"`: copyright holder, when it differs from the git user name.
 
-The script fills the templates in `assets/repo-template/`, creates `<parent-directory>/<skill-name>/`, links the skill into the new repository's `.claude/skills/` and `.agents/skills/` folders so it can be tested in place, and runs `git init`. It refuses to overwrite a non-empty folder. Do not read the templates; read the generated files instead. Run the script with `--help` to see the other options.
+The script fills the English base templates in `assets/repo-template/`, creates `<parent-directory>/<skill-name>/`, links the skill into the new repository's `.claude/skills/` and `.agents/skills/` folders so it can be tested in place, and runs `git init`. It refuses to overwrite a non-empty folder. Do not read the templates; read the generated files instead. Run the script with `--help` to see the other options.
 
 ### 4. Write the content
 
@@ -93,7 +92,7 @@ Replace every double-bracket TODO marker in the new repository:
 
 - `skills/<name>/SKILL.md`: keep every section of the template. Together they are the standard structure of the skills produced here.
 - `skills/<name>/evals/evals.json` and `eval_queries.json`: the three evals from step 2, and at least eight trigger queries, half of them near misses that must not trigger the skill.
-- `README.md`: purpose, notes for the primary platform, three test prompts, requirements and the official sources. The install table comes from the snapshot and states its date. Check the primary platform's row against the live docs and correct it if they differ; leave the other rows as they are.
+- `README.md`: purpose, notes for the primary platform, three test prompts, requirements and the official sources. The install table comes from the snapshot and states its date. Check the primary platform's row against the live docs and correct it if they differ; leave the other rows as they are. The scaffolded README starts in English; when the user works in another language, translate the headings and prose into the user's language while keeping code blocks, file paths, commands and URLs unchanged (unless the user prefers an English README).
 
 Add `references/`, `scripts/` or `assets/` inside the skill folder only when the design calls for them. Link each new file from `SKILL.md` and add it to the layout in `README.md` and `AGENTS.md`. Put input files for evals in `evals/files/`.
 
@@ -122,7 +121,7 @@ Use the format below.
 
 ## Output format
 
-Reply in the user's language with exactly these five parts. In Italian the headings are `PARTE 1: ANALISI TECNICA`, `PARTE 2: SKILL COMPLETA`, `PARTE 3: INSTALLAZIONE E IMPOSTAZIONI`, `PARTE 4: TEST PRATICI` and `PARTE 5: FONTI UFFICIALI`.
+Reply in the user's language with exactly these five parts, translating the five headings naturally when the user writes in a language other than English:
 
 ```markdown
 ## PART 1: TECHNICAL ANALYSIS
@@ -147,7 +146,7 @@ Before delivering, confirm each point:
 
 - The validator reports 0 errors, and every remaining warning is explained.
 - Every claim about the primary platform, in the README and in the report, has an official URL or is marked as unverified.
-- The description says what the skill does and when to use it, with trigger phrases in the user's language.
+- The description says what the skill does and when to use it, and includes trigger phrases in the user's language when they write in a language other than English.
 - `SKILL.md` contains no agent-specific syntax, tool names or install paths.
 - The repository holds `README.md`, `LICENSE` (MIT), `.gitignore`, `AGENTS.md`, `CHANGELOG.md` and at least three evals.
 - The work is committed locally and nothing was pushed.
@@ -162,10 +161,14 @@ Before delivering, confirm each point:
 
 ## Examples
 
-**Request:** "Piattaforma: Claude Code. Compito: ogni lunedì trasformo l'export CSV delle vendite in un report con i totali per categoria."
+**Request:** "Platform: Claude Code. Task: every Monday I turn the weekly sales CSV export into a markdown report with category totals."
 
-**Result:** a repository `weekly-sales-report/` in the destination directory, scaffolded with `--lang it`. Its `SKILL.md` description ends with Italian trigger phrases. It has three evals, a README in Italian with the Claude Code install steps and links to the official docs, a validator run with 0 errors and one local commit. The reply is the five-part report in Italian.
+**Result:** a repository `weekly-sales-report/` in the destination directory. Its `SKILL.md` is in English with portable frontmatter and a clear trigger description. It has three evals, an English README with the Claude Code install steps and links to the official docs, a validator run with 0 errors and one local commit. The reply is the five-part report in English.
 
-**Request:** "make me a skill that renames client photos"
+**Request:** "Plataforma: OpenCode. Tarea: cada viernes convierto las notas de reunión en un resumen de decisiones y próximos pasos."
+
+**Result:** a repository `meeting-notes-summary/` in the destination directory. Its `SKILL.md` and `AGENTS.md` stay in English, while the `description` includes Spanish trigger phrases alongside the English wording. Its `README.md` and the five-part report (with translated headings) are written in Spanish, validated with 0 errors and committed locally.
+
+**Request:** "Make me a skill that renames client photos."
 
 **Result:** one question asking which platform the user works with, since the task is already clear. No files are created until the answer arrives.

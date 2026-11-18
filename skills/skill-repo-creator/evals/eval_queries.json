@@ -1,12 +1,14 @@
 [
-  { "query": "crea una skill per Gemini che riassume i verbali delle riunioni nel formato che usiamo in azienda", "should_trigger": true },
   { "query": "Platform: Codex. Task: I keep writing the same release notes by hand from merged PRs, package that as a skill", "should_trigger": true },
-  { "query": "voglio automatizzare la stesura dei preventivi che faccio ogni settimana su Claude, mi serve una skill riutilizzabile", "should_trigger": true },
   { "query": "scaffold a new agent skill repo for converting bank statements to CSV, I'm on OpenCode", "should_trigger": true },
-  { "query": "nuova skill: piattaforma Antigravity, compito controllare i link rotti nei README dei miei progetti", "should_trigger": true },
-  { "query": "installa la skill pdf che ho scaricato in ~/Downloads/pdf-skill.zip", "should_trigger": false },
+  { "query": "Turn my weekly invoice reconciliation checklist into a reusable Claude Code skill", "should_trigger": true },
+  { "query": "crea una skill per Antigravity che controlla i link rotti nei README dei miei progetti", "should_trigger": true },
+  { "query": "Quiero crear una skill para OpenCode que resuma actas de reunión con el formato de mi equipo", "should_trigger": true },
+  { "query": "Crée une skill pour Claude Code qui prépare automatiquement nos comptes rendus hebdomadaires", "should_trigger": true },
+  { "query": "install the pdf skill I downloaded in ~/Downloads/pdf-skill.zip", "should_trigger": false },
   { "query": "why isn't my deploy skill triggering in Claude Code? the description looks fine to me", "should_trigger": false },
   { "query": "find me an existing skill for React performance reviews", "should_trigger": false },
+  { "query": "write a system prompt for my customer support chatbot", "should_trigger": false },
   { "query": "riassumi questo verbale di riunione in cinque punti", "should_trigger": false },
-  { "query": "write a system prompt for my customer support chatbot", "should_trigger": false }
+  { "query": "Instala esta skill en mi carpeta de Cursor y dime si funciona", "should_trigger": false }
 ]

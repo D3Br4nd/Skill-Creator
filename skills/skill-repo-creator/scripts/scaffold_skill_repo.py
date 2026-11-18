@@ -7,7 +7,7 @@ runs `git init`. Nothing is committed and nothing is pushed.
 
 Usage:
     python3 scaffold_skill_repo.py --name NAME --description TEXT --dest PARENT_DIR
-                                   [--title TEXT] [--author TEXT] [--lang en|it]
+                                   [--title TEXT] [--author TEXT]
                                    [--no-git] [--no-dev-links] [--allow-nested]
 
 Exit status: 0 = repository created, 1 = refused (the message says why).
@@ -36,7 +36,6 @@ TEMPLATE_DIR = SCRIPT_DIR.parent / "assets" / "repo-template"
 PLATFORMS_SNAPSHOT = SCRIPT_DIR.parent / "references" / "platforms.md"
 VALIDATOR = SCRIPT_DIR / "validate_skill.py"
 NAME_PLACEHOLDER = "__SKILL_NAME__"
-README_TEMPLATES = {"en": "README.md.tmpl", "it": "README.it.md.tmpl"}
 # Folded YAML lines stay well under common 100-column limits once indented.
 YAML_WRAP_WIDTH = 86
 
@@ -67,13 +66,9 @@ def snapshot_date():
     return match.group(1)
 
 
-def output_path(relative, lang):
-    """Map a template path to its output path, or None when it does not apply."""
+def output_path(relative):
+    """Map a template path to its output path."""
     name = relative.name
-    if name in README_TEMPLATES.values():
-        if name != README_TEMPLATES[lang]:
-            return None
-        return relative.with_name("README.md")
     if name.endswith(".tmpl"):
         name = name[: -len(".tmpl")]
     if name.startswith("dot-"):
@@ -91,7 +86,6 @@ def main(argv=None):
     parser.add_argument("--dest", required=True, help="existing parent directory; the repo is created at DEST/NAME")
     parser.add_argument("--title", help="human-readable title (default: derived from the name)")
     parser.add_argument("--author", help="copyright holder for the MIT license (default: git config user.name)")
-    parser.add_argument("--lang", choices=sorted(README_TEMPLATES), default="en", help="language of the README (default: en)")
     parser.add_argument("--no-git", action="store_true", help="do not run git init")
     parser.add_argument("--no-dev-links", action="store_true", help="do not symlink the skill into .claude/skills and .agents/skills")
     parser.add_argument("--allow-nested", action="store_true", help="allow creating the repo inside an existing git work tree")
@@ -143,9 +137,7 @@ def main(argv=None):
     for source in sorted(TEMPLATE_DIR.rglob("*")):
         if not source.is_file() or source.name == ".DS_Store":
             continue
-        relative = output_path(source.relative_to(TEMPLATE_DIR), args.lang)
-        if relative is None:
-            continue
+        relative = output_path(source.relative_to(TEMPLATE_DIR))
         destination = target / Path(str(relative).replace(NAME_PLACEHOLDER, name))
         destination.parent.mkdir(parents=True, exist_ok=True)
         text = source.read_text(encoding="utf-8")
@@ -177,7 +169,7 @@ def main(argv=None):
             if ok:
                 git("symbolic-ref", "HEAD", "refs/heads/main", cwd=str(target))
         if not ok:
-            notes.append("git init failed or git is not installed; initialise the repository manually")
+            notes.append("git init failed or git is not installed; initialize the repository manually")
 
     print("Created skill repository: %s" % target)
     for path in sorted(created):

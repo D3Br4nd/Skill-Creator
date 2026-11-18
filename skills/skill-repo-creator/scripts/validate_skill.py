@@ -60,12 +60,11 @@ NULL_RE = re.compile(r"^(null|~)$", re.I)
 NUMBER_RE = re.compile(r"^[-+]?(0x[0-9a-f_]+|0o[0-7_]+|(\d[\d_]*(\.\d*)?|\.\d+)(e[-+]?\d+)?)$", re.I)
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+[\"'][^\"']*[\"'])?\s*\)")
 WHEN_CUE_RE = re.compile(
-    r"\buse (this skill )?(when|whenever|for|if|to)\b|\bwhen (the|a) user\b|\bwhen working\b"
-    r"|\busa(re)? (questa skill )?quando\b|\bda usare quando\b|\bquando l.utente\b",
+    r"\buse (this skill )?(when|whenever|for|if|to)\b|\bwhen (the|a) user\b|\bwhen working\b",
     re.I,
 )
 POV_RE = re.compile(
-    r"^\s*(I|We|You)\b|\bI can\b|\bI will\b|\bI'll\b|\byou can use\b|\bposso\b|\bpuoi usare\b|\bti aiuto\b",
+    r"^\s*(I|We|You)\b|\bI can\b|\bI will\b|\bI'll\b|\byou can use\b",
     re.I,
 )
 AGENT_SPECIFIC = (
@@ -75,7 +74,7 @@ AGENT_SPECIFIC = (
     (re.compile(r"~/\.(claude|codex|gemini|agents|config/opencode)\b"), "an agent-specific install path"),
 )
 WINDOWS_PATH_RE = re.compile(r"\b(scripts|references|reference|assets|resources|examples)\\[\w.\-]+")
-TOC_HEADING_RE = re.compile(r"^#{1,4}\s*(table of contents|contents|indice|sommario)\b", re.I)
+TOC_HEADING_RE = re.compile(r"^#{1,4}\s*(table of contents|contents)\b", re.I)
 
 
 class Report:
@@ -416,7 +415,7 @@ def validate_skill(skill_dir, report, prefix="", scan_placeholders=True):
         report.error(where, "missing; the file must be named exactly SKILL.md (upper case)")
         return None
     text = read_text(skill_dir / "SKILL.md")
-    if text.startswith("﻿"):
+    if text.startswith("\ufeff"):
         report.error(where, "starts with a UTF-8 byte-order mark; save the file without a BOM")
         text = text[1:]
     try:

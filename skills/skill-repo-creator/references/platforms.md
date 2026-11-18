@@ -144,4 +144,4 @@ Verification: third-party tool, read on its own documentation. Source: https://g
 
 ## Platforms not listed here
 
-There is no snapshot. Search the vendor's official documentation for Agent Skills or `SKILL.md` support. If the platform has none, find its native customisation format (custom instructions, custom assistants, projects) and its limits, then apply the adapter rule in `SKILL.md`.
+There is no snapshot. Search the vendor's official documentation for Agent Skills or `SKILL.md` support. If the platform has none, find its native customization format (custom instructions, custom assistants, projects) and its limits, then apply the adapter rule in `SKILL.md`.

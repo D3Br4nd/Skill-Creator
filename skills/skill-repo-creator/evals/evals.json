@@ -3,14 +3,14 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Piattaforma: Claude Code. Compito: ogni lunedì prendo l'export CSV delle vendite della settimana (vendite_settimana.csv) e scrivo a mano un report markdown con i totali per categoria e i 5 prodotti migliori. Voglio una skill che lo faccia.",
-      "expected_output": "A new standalone git repository named after the task, outside any other repository, with skills/<name>/SKILL.md (portable frontmatter, Italian trigger phrases in the description), at least three evals, an Italian README with Claude Code install steps and official source links, MIT LICENSE, .gitignore and AGENTS.md. The validator reports 0 errors, the work is committed locally, and the reply is the five-part report in Italian.",
+      "prompt": "Platform: Claude Code. Task: every Monday I take the weekly sales CSV export (weekly_sales.csv) and manually write a markdown report with category totals and the top 5 products. I want a skill that does this.",
+      "expected_output": "A new standalone git repository named after the task, outside any other repository, with skills/<name>/SKILL.md (portable frontmatter, third-person English description with a 'Use when' clause), at least three evals, an English README with Claude Code install steps and official source links, MIT LICENSE, .gitignore and AGENTS.md. The validator reports 0 errors, the work is committed locally, and the reply is the five-part report in English.",
       "files": [],
       "assertions": [
         "The new repository contains README.md, LICENSE, .gitignore, AGENTS.md and skills/<name>/SKILL.md",
         "Running the repository's scripts/validate_skill.py reports 0 errors",
         "The SKILL.md frontmatter uses only name, description, license, compatibility, metadata or allowed-tools",
-        "The reply has five parts headed PARTE 1 to PARTE 5",
+        "The reply has five parts headed PART 1 to PART 5",
         "The reply lists at least one official documentation URL for Claude Code",
         "The repository has a local commit and no remote"
       ]
@@ -29,13 +29,25 @@
     },
     {
       "id": 3,
-      "prompt": "crea una skill per rinominare le foto dei clienti",
+      "prompt": "Make me a skill that renames client photos.",
       "expected_output": "The agent asks one question, for the missing platform, and creates no files until the user answers.",
       "files": [],
       "assertions": [
         "The reply asks which platform or agent the user works with",
         "No repository or file is created in this turn",
         "The reply does not ask for details that can be derived later, such as the skill name"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Piattaforma: OpenCode. Compito: ogni venerdì trasformo gli appunti delle riunioni in un riepilogo con decisioni prese e azioni assegnate. Crea una skill.",
+      "expected_output": "A new standalone git repository with agent-facing files (SKILL.md and AGENTS.md) kept in English, natural Italian trigger phrases added to the SKILL.md description alongside the English wording, a README translated into Italian, 0 validator errors, one local commit, and the five-part report delivered in Italian with translated headings.",
+      "files": [],
+      "assertions": [
+        "SKILL.md body and AGENTS.md are written in English",
+        "The SKILL.md description is in English third person with a 'Use when' clause and includes Italian trigger phrases",
+        "README.md and the five-part delivery report are written in Italian",
+        "Running the repository's scripts/validate_skill.py reports 0 errors"
       ]
     }
   ]
