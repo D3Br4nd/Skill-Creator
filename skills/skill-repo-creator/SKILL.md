@@ -9,7 +9,7 @@ description: >-
 license: MIT
 metadata:
   author: "Max Brandini"
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Skill Repo Creator
@@ -28,7 +28,7 @@ Consult [references/platforms.md](references/platforms.md) for sources and the d
 
 ## Build the repository
 
-1. **Define success.** Read [references/authoring-rules.md](references/authoring-rules.md). Choose a descriptive name and draft three evals before writing the workflow. Cover a typical request, a paraphrase and an edge case, each with an observable expected result. Add at least eight trigger queries with a balance of matches and near misses.
+1. **Define success.** Read [references/authoring-rules.md](references/authoring-rules.md). Choose a descriptive name and draft three evals before writing the workflow. Cover a typical request, a paraphrase and an edge case, each with observable assertions fixed before either run. Add at least eight trigger queries with a balance of matches and near misses.
 2. **Scaffold.** Run the bundled script with the user’s destination or the workspace default. Otherwise choose a parent directory outside any existing git worktree. Preserve existing work when a name collides.
 
    ```sh
@@ -39,7 +39,7 @@ Consult [references/platforms.md](references/platforms.md) for sources and the d
 
 3. **Write the skill.** Replace the scaffold markers. Keep the goal, essential inputs, procedure and success criteria. Merge or remove template headings that add no task-specific guidance. Bundle a script for deterministic work, state its runtime in the skill body and use the optional `compatibility` field when the target accepts it and link the resources the agent needs. Put eval fixtures under `evals/files/` and list their paths relative to the installed skill folder.
 4. **Write for the reader.** Use the user's language for questions, the generated README and the report, unless they request otherwise. Keep the repository base and agent-facing files in English by default. Include natural trigger phrases in the user's language alongside the English description. In the generated README, retain the install table's snapshot date, verify any requested platform and identify which behaviors were actually tested.
-5. **Validate and exercise.** Run `python3 "<new-repo>/scripts/validate_skill.py"`. Fix every error and fix or explain each warning. Run the three README prompts in fresh contexts when available and compare the actual output with the corresponding evals. Correct failures and rerun the affected checks. Record unexecuted prompts as such. Structural validation alone does not exercise the skill.
+5. **Validate and exercise.** Run `python3 "<new-repo>/scripts/validate_skill.py"`. Fix every error and fix or explain each warning. Follow [references/behavioral-evaluation.md](references/behavioral-evaluation.md) to run each prompt with and without the skill in independent sessions. Score actual outputs against the same criteria. For a multi-agent target, repeat a pair on a second host when available. Report scores, ties, regressions and missing runs. If the comparison uncovers a defect, fix it and distinguish the retest from the original results.
 6. **Commit locally.** Check that the new repository contains its own git metadata and that the intended files are present, then stage them and make one initial commit. Leave publishing and installation to an explicit user request.
 
 ## Delivery
@@ -49,5 +49,5 @@ Use five parts, with headings translated into the user's language.
 1. **Technical analysis** explains how the task works, required capabilities and any platform limits.
 2. **Complete skill** gives the repository path and tree, the full SKILL.md verbatim and a one-line description of each other bundled file.
 3. **Installation and settings** identifies the installable folder and gives documented steps for the requested host, or the dated choices for a portable brief.
-4. **Practical tests** lists the three prompts, their expected results and what was actually run.
+4. **Practical tests** gives the three prompts, expected results, paired scores and what changed when the skill was loaded. Identify any untested host or condition.
 5. **Official sources** pairs each source with the decision it supports and identifies anything still unverified.

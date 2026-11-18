@@ -4,7 +4,7 @@
 
 **Turn a task you repeat into an Agent Skill your team can inspect, test and reuse.**
 
-[![Creator version](https://img.shields.io/badge/version-0.2.0-d95432?style=flat-square)](skills/skill-repo-creator/SKILL.md)
+[![Creator version](https://img.shields.io/badge/version-0.3.0-d95432?style=flat-square)](skills/skill-repo-creator/SKILL.md)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-open%20standard-7048a8?style=flat-square)](https://agentskills.io/specification)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3572a5?style=flat-square)](#requirements)
 [![License](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
@@ -53,7 +53,7 @@ weekly-sales-report/
 | Design | Defines the expected result for a typical request, a paraphrase and an edge case before writing the workflow. |
 | Packaging | Keeps task resources inside the installable folder. Host setup belongs in the README or a documented adapter. |
 | Validation | Checks frontmatter, local links, evaluation files and unfinished template markers. |
-| Practical tests | Compares fresh-session results with the expected outputs when a runner is available. The report identifies which prompts were executed. |
+| Practical tests | Runs the same prompts with and without the skill and scores both outputs against criteria set beforehand. The report shows gains, ties and regressions, plus a second-host check when available. |
 
 The five-part handoff covers technical choices, the complete skill, installation, practical tests and sources. Questions, generated READMEs and handoffs follow the user's language. Agent-facing instructions default to English.
 
@@ -95,7 +95,7 @@ Fill the template prompts and run `python3 ../weekly-sales-report/scripts/valida
 
 | For maintainers | Where to look |
 |---|---|
-| Which decisions shape a generated skill? | [Authoring rules](skills/skill-repo-creator/references/authoring-rules.md) · [Portability rules](skills/skill-repo-creator/references/portability.md) |
+| Which decisions shape a generated skill? | [Authoring rules](skills/skill-repo-creator/references/authoring-rules.md) · [Portability rules](skills/skill-repo-creator/references/portability.md) · [Behavioral evaluation](skills/skill-repo-creator/references/behavioral-evaluation.md) |
 | What does the scaffolder copy? | [Repository templates](skills/skill-repo-creator/assets/repo-template/) |
 | Where do platform claims come from? | [Platform snapshot](skills/skill-repo-creator/references/platforms.md) · [Source index](sources/links-best-practices.md) |
 

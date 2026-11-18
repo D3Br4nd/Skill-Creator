@@ -12,7 +12,8 @@
         "The SKILL.md frontmatter uses only name, description, license, compatibility, metadata or allowed-tools",
         "The reply covers technical analysis, the complete skill, installation, practical tests and official sources in five parts",
         "The reply lists at least one official documentation URL for Claude Code",
-        "The repository has a local commit and no remote"
+        "The repository has a local commit and no remote",
+        "The practical tests section gives matched baseline and assisted scores for executed cases and clearly identifies any unexecuted condition"
       ]
     },
     {

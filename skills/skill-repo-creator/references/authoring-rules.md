@@ -113,7 +113,7 @@ Agents load a skill in three stages: metadata at startup (about 100 tokens), the
 - Store them in `evals/evals.json` inside the skill folder: `skill_name` and an `evals` array of `id`, `prompt`, `expected_output`, optional `files` and optional `assertions`. [E]
 - Keep the input files of an eval in `evals/files/` and list them in `files` with paths relative to the skill folder, such as `evals/files/sales.csv`. [E]
 - Write prompts a real user would type: varied wording, concrete details such as file paths, and at least one edge case. [E]
-- Add `assertions` after the first run, once it is clear what a good result looks like. Each must be verifiable: "the output file is valid JSON", not "the output is good". [E]
+- Before comparing conditions, define observable assertions for the expected result. Record exploratory observations and any new criteria separately for the next evaluation.
 - Test the description with trigger queries: about twenty, half that should trigger and half near misses that share keywords but need something else. Run each three times and treat a trigger rate above 0.5 as a pass. [E]
 - Run every eval in a clean context, with and without the skill. Keep the run outputs in a `<name>-workspace/` folder beside the skill; the repository ignores it. [E]
 - Test with each model the skill will be used with. [A]
