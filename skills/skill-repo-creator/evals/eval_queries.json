@@ -1,4 +1,5 @@
 [
+  {"query": "Turn our weekly reporting procedure into a reusable skill that teammates can use across agents", "should_trigger": true},
   { "query": "Platform: Codex. Task: I keep writing the same release notes by hand from merged PRs, package that as a skill", "should_trigger": true },
   { "query": "scaffold a new agent skill repo for converting bank statements to CSV, I'm on OpenCode", "should_trigger": true },
   { "query": "Turn my weekly invoice reconciliation checklist into a reusable Claude Code skill", "should_trigger": true },

@@ -4,7 +4,7 @@ This repository is a skill factory. It holds one skill, `skills/skill-repo-creat
 
 ## When the user asks for a new skill
 
-The user gives two things: the AI platform and the repetitive task to automate.
+The user gives the repetitive task to automate and may name a target platform. A task-only brief uses the portable Agent Skills format.
 
 Read `skills/skill-repo-creator/SKILL.md` and follow it from start to finish. If your agent already lists a skill named `skill-repo-creator`, load that skill instead; it is the same file.
 

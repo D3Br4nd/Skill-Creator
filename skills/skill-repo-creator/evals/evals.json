@@ -10,7 +10,7 @@
         "The new repository contains README.md, LICENSE, .gitignore, AGENTS.md and skills/<name>/SKILL.md",
         "Running the repository's scripts/validate_skill.py reports 0 errors",
         "The SKILL.md frontmatter uses only name, description, license, compatibility, metadata or allowed-tools",
-        "The reply has five parts headed PART 1 to PART 5",
+        "The reply covers technical analysis, the complete skill, installation, practical tests and official sources in five parts",
         "The reply lists at least one official documentation URL for Claude Code",
         "The repository has a local commit and no remote"
       ]
@@ -29,13 +29,14 @@
     },
     {
       "id": 3,
-      "prompt": "Make me a skill that renames client photos.",
-      "expected_output": "The agent asks one question, for the missing platform, and creates no files until the user answers.",
+      "prompt": "Create a reusable skill that takes a Markdown meeting transcript and writes a table of decisions, owners and deadlines. Leave missing owners or dates blank.",
+      "expected_output": "A portable skill repository with one local commit. Its instructions work directly from the transcript. The README explains which folder to install and the report distinguishes documented options from tests actually run.",
       "files": [],
       "assertions": [
-        "The reply asks which platform or agent the user works with",
-        "No repository or file is created in this turn",
-        "The reply does not ask for details that can be derived later, such as the skill name"
+        "A repository is created without asking the user to pick a platform",
+        "Each decision row preserves missing owners and dates as blank cells",
+        "The default scaffold has no host discovery links or CLAUDE.md",
+        "The installable skill folder has no dependency on files from the repository root"
       ]
     },
     {
@@ -48,6 +49,16 @@
         "The SKILL.md description is in English third person with a 'Use when' clause and includes Italian trigger phrases",
         "README.md and the five-part delivery report are written in Italian",
         "Running the repository's scripts/validate_skill.py reports 0 errors"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I want to build a reusable skill for my team. We use several agents.",
+      "expected_output": "The agent asks what recurring task to automate before creating files.",
+      "files": [],
+      "assertions": [
+        "The question asks for the task",
+        "No platform choice is required and no repository is created"
       ]
     }
   ]

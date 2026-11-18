@@ -6,7 +6,7 @@
 |---|---|
 | Skill name | `{{SKILL_NAME}}` |
 | Format | [Agent Skills open standard](https://agentskills.io) |
-| Primary platform | [[TODO: the platform this skill was researched and tested for]] |
+| Target | [[TODO: Portable Agent Skills, or the platform the user requested]] |
 | License | MIT |
 
 ## Install
@@ -22,17 +22,9 @@ The skill is the folder `skills/{{SKILL_NAME}}/`. Copy it into your agent's skil
 
 Paths as documented by each vendor on {{SNAPSHOT_DATE}}.
 
-```bash
-# Example: user scope, Claude Code
-cp -R skills/{{SKILL_NAME}} ~/.claude/skills/
-```
+Copy the entire skill folder, including any bundled scripts and references. From a local clone, the community [skills CLI](https://github.com/vercel-labs/skills) also supports `npx skills add .`.
 
-Other ways to install:
-
-- **claude.ai**: zip the folder (`cd skills && zip -r ../{{SKILL_NAME}}.zip {{SKILL_NAME}}`) and upload the zip as a custom skill in the claude.ai settings. Requires a paid plan with code execution enabled.
-- **Many agents at once**: `npx skills add <owner>/<repo>` once this repository is on GitHub, or `npx skills add .` from a local clone. This uses the community [`skills` CLI](https://github.com/vercel-labs/skills).
-
-[[TODO: Notes for the primary platform, verified in its official docs (plan requirements, limits, features that are unavailable). Delete this line if there are none.]]
+[[TODO: For a requested platform, give the documented installation steps and relevant requirements. Otherwise remove this paragraph.]]
 
 ## Use
 

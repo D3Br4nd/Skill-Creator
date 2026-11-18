@@ -11,7 +11,7 @@ Rules distilled from the official sources listed at the end. Each rule carries t
 
 ## Contents
 
-- Anatomy: the standard sections
+- Anatomy of the factory template
 - Frontmatter
 - Description
 - Body
@@ -21,9 +21,9 @@ Rules distilled from the official sources listed at the end. Each rule carries t
 - Evals
 - Sources
 
-## Anatomy: the standard sections
+## Anatomy of the factory template
 
-Every skill produced here has these eleven elements. The template already contains a place for each one.
+These are prompts for authors using the factory template. Combine or omit headings when the workflow is clearer without them. The Agent Skills format requires frontmatter and a Markdown body.
 
 | Element | Where it lives |
 |---|---|
@@ -46,7 +46,7 @@ Triggers belong in the description, not in the body: agents read the body only a
 - `name` and `description` are required. [S][A][O]
 - The only other portable fields are `license`, `compatibility` (at most 500 characters), `metadata` (a map of string keys to string values) and `allowed-tools` (a space-separated string, experimental). [S]
 - Add nothing else at the top level. Claude's upload surfaces reject any other key with a hard error. [C]
-- `name`: 1 to 64 characters, lowercase letters, digits and single hyphens, no leading or trailing hyphen, equal to the folder name. [S] It must not contain `anthropic` or `claude`. [A]
+- `name`: 1 to 64 characters, lowercase letters, digits and single hyphens, no leading or trailing hyphen, equal to the folder name. [S] Claude upload targets also reserve `anthropic` and `claude`. [A]
 - Prefer a gerund or a noun phrase that names the task: `processing-pdfs`, `pdf-processing`. Avoid vague names such as `helper`, `utils`, `tools`, `data`. [A]
 - Quote any value that contains a colon followed by a space, or a space followed by `#`. Quote numbers and booleans under `metadata`. When the YAML does not parse, at least one agent loads the skill with empty metadata, so the skill silently stops triggering. [C]
 - Include `compatibility` only when the skill has real environment requirements. [S]
@@ -61,7 +61,7 @@ Agents load only the name and the description at startup, so the description alo
 - Describe the user's intent, not the implementation. Name the contexts where the skill applies, including requests that do not mention the domain by name. [E]
 - When near misses exist, say what the skill does not cover. [O][E]
 - Use the words the user would type; when the user works in a language other than English, include natural trigger phrases in that language alongside the English description.
-- Stay within 1024 characters, and use square brackets instead of angle brackets. [S][A][C]
+- Stay within 1024 characters. [S] Avoid XML tags for Claude upload targets. [A]
 
 ## Body
 

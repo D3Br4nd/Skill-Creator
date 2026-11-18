@@ -7,7 +7,6 @@ This repository packages one Agent Skill, `skills/{{SKILL_NAME}}/`, written to t
 - `skills/{{SKILL_NAME}}/`: the skill. It is the only folder an agent installs, so keep human documentation out of it.
 - `skills/{{SKILL_NAME}}/evals/`: `evals.json` (test cases) and `eval_queries.json` (trigger queries).
 - `scripts/validate_skill.py`: the validator.
-- `.claude/skills/` and `.agents/skills/`: symlinks to the skill, so an agent opened in this repository can load it for testing.
 - `README.md`, `CHANGELOG.md`, `LICENSE`: documentation for people.
 
 ## Before every commit
@@ -20,13 +19,13 @@ Do not push, publish or install the skill outside this repository unless the use
 
 ## Agent-agnostic rules
 
-The skill must work unchanged in every agent that supports the standard.
+Keep the installed folder self-contained and declare the capabilities its workflow needs.
 
 1. **Frontmatter.** Use only `name`, `description`, `license`, `compatibility`, `metadata` and `allowed-tools`. Some agents reject any other top-level key. Put agent-specific settings under `metadata` as quoted strings, or in a sidecar file that other agents ignore.
-2. **Name.** Lowercase letters, digits and hyphens, at most 64 characters, equal to the folder name, and without the words `anthropic` or `claude`.
-3. **Description.** Third person, stating what the skill does and when to use it, with the key use case first. At most 1024 characters and no angle brackets.
+2. **Name.** Lowercase letters, digits and hyphens, at most 64 characters, equal to the folder name. For Claude upload targets, also avoid `anthropic` and `claude`.
+3. **Description.** Third person, stating what the skill does and when to use it, with the key use case first. At most 1024 characters. Claude upload targets also reject XML tags.
 4. **Body.** Under 500 lines. Address "the agent", not a product. Describe actions ("read `references/x.md`", "run `scripts/y.py`") instead of naming one agent's tools, variables, slash commands or install paths.
 5. **Paths.** Relative to the skill folder, with forward slashes. Link every bundled file directly from `SKILL.md`, one level deep.
-6. **Scripts.** Self-contained, run through their interpreter (`python3 scripts/y.py`), with `--help` and specific error messages. State runtime, packages and network needs in `compatibility`, because some agents run skills with no network and no package installation.
+6. **Scripts.** Self-contained, run through their interpreter (`python3 scripts/y.py`), with `--help` and specific error messages. State runtime, packages and network needs in the skill body (and optionally in `compatibility` when accepted), because some agents run skills with no network and no package installation.
 7. **Content.** No time-sensitive statements, and one term per concept.
 8. **Evals.** Keep at least three test cases in `evals/evals.json` and update them when behavior changes.

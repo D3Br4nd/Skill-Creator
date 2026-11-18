@@ -6,6 +6,7 @@ Run from the repository root:
 import ast
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -97,7 +98,9 @@ class FrontmatterErrorTests(TempDirTest):
         self.check("name: other-name\ndescription: %s\n" % DESCRIPTION, "must equal its directory name")
 
     def test_reserved_word(self):
-        self.check("name: claude-tools\ndescription: %s\n" % DESCRIPTION, "reserved word", directory="claude-tools")
+        result = run(VALIDATE, make_skill(self.tmp, name="claude-tools"))
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assert_warning(result, "Claude uploads")
 
     def test_name_too_long(self):
         name = "a" * 65
@@ -112,8 +115,16 @@ class FrontmatterErrorTests(TempDirTest):
     def test_description_too_long(self):
         self.check("name: demo-skill\ndescription: %s\n" % ("Use when needed. " + "x" * 1024), "maximum is 1024")
 
-    def test_description_with_angle_brackets(self):
-        self.check("name: demo-skill\ndescription: Renames <file> items. Use when the user asks to rename.\n", "'<' or '>'")
+    def test_xml_tag_is_a_host_warning(self):
+        frontmatter = "name: demo-skill\ndescription: Renames <file> items. Use when the user asks to rename.\n"
+        result = run(VALIDATE, make_skill(self.tmp, frontmatter=frontmatter))
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assert_warning(result, "Claude uploads reject XML tags")
+
+    def test_comparison_is_not_an_xml_tag(self):
+        frontmatter = "name: demo-skill\ndescription: Flags values > 20. Use when the user asks for high scores.\n"
+        result = run(VALIDATE, make_skill(self.tmp, frontmatter=frontmatter), "--strict")
+        self.assertEqual(result.returncode, 0, result.stdout)
 
     def test_unquoted_colon_breaks_yaml(self):
         self.check("name: demo-skill\ndescription: Builds reports. Use when: the user asks for one.\n", "contains ': '")
@@ -154,6 +165,41 @@ class ContentTests(TempDirTest):
         skill = make_skill(self.tmp)
         (skill / "evals" / "evals.json").unlink()
         self.assert_error(run(VALIDATE, skill), "evals/evals.json: missing")
+
+    def test_malformed_eval_data_is_reported(self):
+        skill = make_skill(self.tmp)
+        cases = skill / "evals" / "evals.json"
+        data = json.loads(cases.read_text(encoding="utf-8"))
+        data["evals"][0]["id"] = []
+        cases.write_text(json.dumps(data), encoding="utf-8")
+        self.assert_error(run(VALIDATE, skill), "needs a unique 'id'")
+        cases.write_text("null", encoding="utf-8")
+        self.assert_error(run(VALIDATE, skill), "expected an object")
+
+    def test_evaluation_fixtures_travel_with_the_skill(self):
+        skill = make_skill(self.tmp)
+        fixture = skill / "evals" / "notes.txt"
+        fixture.write_text("meeting notes", encoding="utf-8")
+        outside = self.tmp / "other.txt"
+        outside.write_text("outside", encoding="utf-8")
+        cases = skill / "evals" / "evals.json"
+        data = json.loads(cases.read_text(encoding="utf-8"))
+        for files, error in [
+            (["evals/notes.txt"], None),
+            (["../other.txt"], "inside the skill folder"),
+            ([str(fixture)], "must be relative"),
+            (["evals"], "lists missing file"),
+            ("evals/notes.txt", "must be a list"),
+            ([None], "non-empty fixture path"),
+        ]:
+            with self.subTest(files=files):
+                data["evals"][0]["files"] = files
+                cases.write_text(json.dumps(data), encoding="utf-8")
+                result = run(VALIDATE, skill)
+                if error:
+                    self.assert_error(result, error)
+                else:
+                    self.assertEqual(result.returncode, 0, result.stdout)
 
     def test_broken_link(self):
         body = "# Demo\n\nSee [the guide](references/guide.md).\n"
@@ -213,7 +259,7 @@ class ScaffoldTests(TempDirTest):
         self.assertEqual(result.returncode, 0, result.stderr)
         repo = self.tmp / "weekly-sales-report"
         for expected in (
-            "README.md", "LICENSE", ".gitignore", "AGENTS.md", "CLAUDE.md", "CHANGELOG.md",
+            "README.md", "LICENSE", ".gitignore", "AGENTS.md", "CHANGELOG.md",
             "scripts/validate_skill.py", "skills/weekly-sales-report/SKILL.md",
             "skills/weekly-sales-report/evals/evals.json", "skills/weekly-sales-report/evals/eval_queries.json",
         ):
@@ -226,10 +272,8 @@ class ScaffoldTests(TempDirTest):
         self.assertIn('author: "Test \\"Q\\" Author"', skill_md)
         self.assertIn('Copyright (c)', (repo / "LICENSE").read_text(encoding="utf-8"))
         self.assertEqual(list(repo.rglob("*.tmpl")), [])
-        for link_dir in (".claude/skills", ".agents/skills"):
-            link = repo / link_dir / "weekly-sales-report"
-            self.assertTrue(link.is_symlink())
-            self.assertEqual(link.resolve(), (repo / "skills" / "weekly-sales-report").resolve())
+        for optional in ("CLAUDE.md", ".claude", ".agents"):
+            self.assertFalse((repo / optional).exists())
 
         own_validator = repo / "scripts" / "validate_skill.py"
         self.assert_error(run(own_validator), "unfilled TODO marker")
@@ -247,8 +291,23 @@ class ScaffoldTests(TempDirTest):
         result = run(VALIDATE, make_skill(self.tmp, frontmatter=frontmatter), "--strict")
         self.assertEqual(result.returncode, 0, result.stdout)
 
+    def test_portable_factory_copy_can_scaffold_from_another_working_directory(self):
+        installed = self.tmp / "skills" / "skill-repo-creator"
+        shutil.copytree(SCRIPTS.parent, installed)
+        result = run(installed / "scripts" / SCAFFOLD.name, "--name", "claude-notes",
+                     "--description", DESCRIPTION, "--dest", self.tmp, "--author", "Test", "--no-dev-links")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Claude uploads", result.stdout)
+        repo = self.tmp / "claude-notes"
+        self.assertFalse((repo / "CLAUDE.md").exists())
+        self.fill_markers(repo)
+        standalone = self.tmp / "installed" / "claude-notes"
+        shutil.copytree(repo / "skills" / "claude-notes", standalone)
+        result = run(repo / "scripts" / "validate_skill.py", standalone)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
     def test_repo_level_checks(self):
-        self.scaffold()
+        self.scaffold("--dev-links")
         repo = self.tmp / "weekly-sales-report"
         self.fill_markers(repo)
         (repo / "LICENSE").write_text("Apache License\n", encoding="utf-8")
@@ -256,6 +315,11 @@ class ScaffoldTests(TempDirTest):
         (repo / "LICENSE").unlink()
         self.assert_error(run(VALIDATE, repo), "LICENSE: missing or empty")
         link = repo / ".claude" / "skills" / "weekly-sales-report"
+        self.assertTrue((repo / "CLAUDE.md").is_file())
+        for parent in (".claude", ".agents"):
+            dev_link = repo / parent / "skills" / "weekly-sales-report"
+            self.assertTrue(dev_link.is_symlink())
+            self.assertEqual(dev_link.resolve(), (repo / "skills" / "weekly-sales-report").resolve())
         link.unlink()
         link.symlink_to(Path("..") / ".." / "scripts", target_is_directory=True)
         self.assert_error(run(VALIDATE, repo), "symlink does not point to skills/weekly-sales-report")
@@ -267,7 +331,7 @@ class ScaffoldTests(TempDirTest):
         self.assertFalse((self.tmp / "Weekly_Report").exists())
 
     def test_refuses_invalid_description(self):
-        result = self.scaffold(description="Renames <file> items. Use when asked.")
+        result = self.scaffold(description="  ")
         self.assertEqual(result.returncode, 1)
         self.assertIn("invalid --description", result.stderr)
 

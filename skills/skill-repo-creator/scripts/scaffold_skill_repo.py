@@ -2,13 +2,13 @@
 """Scaffold a standalone git repository that packages one Agent Skill.
 
 Creates <dest>/<name>/ from the templates in ../assets/repo-template/, copies
-the validator into it, links the skill into the in-repo agent directories and
+the validator into it, optionally creates local discovery links and
 runs `git init`. Nothing is committed and nothing is pushed.
 
 Usage:
     python3 scaffold_skill_repo.py --name NAME --description TEXT --dest PARENT_DIR
                                    [--title TEXT] [--author TEXT]
-                                   [--no-git] [--no-dev-links] [--allow-nested]
+                                   [--no-git] [--dev-links] [--allow-nested]
 
 Exit status: 0 = repository created, 1 = refused (the message says why).
 Standard library only; Python 3.8+.
@@ -87,7 +87,10 @@ def main(argv=None):
     parser.add_argument("--title", help="human-readable title (default: derived from the name)")
     parser.add_argument("--author", help="copyright holder for the MIT license (default: git config user.name)")
     parser.add_argument("--no-git", action="store_true", help="do not run git init")
-    parser.add_argument("--no-dev-links", action="store_true", help="do not symlink the skill into .claude/skills and .agents/skills")
+    links = parser.add_mutually_exclusive_group()
+    links.add_argument("--dev-links", action="store_true", help="add project discovery links and a Claude Code instruction shim for in-repo testing")
+    links.add_argument("--no-dev-links", dest="dev_links", action="store_false", help="use the portable layout (default)")
+    parser.set_defaults(dev_links=False)
     parser.add_argument("--allow-nested", action="store_true", help="allow creating the repo inside an existing git work tree")
     args = parser.parse_args(argv)
 
@@ -106,6 +109,8 @@ def main(argv=None):
     if not parent.is_dir():
         fail("--dest %s does not exist; create it first or pass an existing directory" % parent)
     target = parent / name
+    if target.is_symlink() or (target.exists() and not target.is_dir()):
+        fail("%s already exists and is not a plain directory; choose another name" % target)
     if target.exists() and any(target.iterdir()):
         fail("%s already exists and is not empty; choose another name or remove it yourself" % target)
     inside_repo, _ = git("rev-parse", "--is-inside-work-tree", cwd=str(parent))
@@ -137,6 +142,8 @@ def main(argv=None):
     for source in sorted(TEMPLATE_DIR.rglob("*")):
         if not source.is_file() or source.name == ".DS_Store":
             continue
+        if source.name == "CLAUDE.md.tmpl" and not args.dev_links:
+            continue
         relative = output_path(source.relative_to(TEMPLATE_DIR))
         destination = target / Path(str(relative).replace(NAME_PLACEHOLDER, name))
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -152,7 +159,7 @@ def main(argv=None):
     created.append(scripts_dir / "validate_skill.py")
 
     notes = []
-    if not args.no_dev_links:
+    if args.dev_links:
         for link_dir in rules.DEV_LINK_DIRS:
             link = target / link_dir / name
             link.parent.mkdir(parents=True, exist_ok=True)
@@ -174,7 +181,7 @@ def main(argv=None):
     print("Created skill repository: %s" % target)
     for path in sorted(created):
         print("  " + path.relative_to(target).as_posix())
-    for warning in warnings:
+    for warning in rules.name_portability_warnings(name) + warnings:
         print("warning: " + warning)
     for note in notes:
         print("note: " + note)
