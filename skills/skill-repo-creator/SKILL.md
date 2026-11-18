@@ -129,7 +129,7 @@ Reply in the user's language with exactly these five parts. In Italian the headi
 [How the task is automated on the chosen platform according to its official docs, and what the platform cannot do.]
 
 ## PART 2: COMPLETE SKILL
-[Repository path, file tree, the frontmatter verbatim and the section outline of SKILL.md. Paste the whole SKILL.md only for a chat-only platform or when the user asks.]
+[Repository path, file tree and the complete SKILL.md, verbatim, in a code block. For other bundled files, give the path and one line on what each contains.]
 
 ## PART 3: INSTALLATION AND SETTINGS
 [Exact steps for the primary platform, then the portable alternatives. Extra files or settings, if any.]
