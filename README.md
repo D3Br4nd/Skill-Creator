@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3572a5?style=flat-square)](#requirements)
 [![License](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 
-[Quick start](#quick-start) · [Examples](#examples) · [Inside the repository](#inside-the-generated-repository) · [Installation](#installation) · [Development](#development)
+[Quick start](#quick-start) · [Examples](#examples) · [Field test](#field-test) · [Inside the repository](#inside-the-generated-repository) · [Installation](#installation) · [Development](#development)
 
 </div>
 
@@ -32,6 +32,19 @@ A brief like this could produce `../weekly-sales-report/`. Open its README for w
 | “Turn our transcript-to-decisions checklist into a reusable skill. Leave unknown owners blank.” | A portable workflow with an evaluation that checks what happens when nobody takes ownership. |
 | “Crea una skill per OpenCode che trasformi le note di rilascio in un aggiornamento per i clienti.” | An Italian README and delivery report, Italian trigger phrases, and installation guidance for OpenCode. |
 | “Our review runs offline and uses a local Python script. Package it as a skill.” | The script travels with the skill. Its instructions name the required runtime so a teammate can check the target environment. |
+
+## Field test
+
+The factory built a skill to reconcile invoices with payments. Each agent received the same synthetic records and accounting rules in fresh sessions. Five checks per case covered invoice balances, payment allocations, unapplied cash, duplicate and conflicting IDs, and totals by currency.
+
+| Agent | Cases | Without the skill | With the skill |
+|---|---|---:|---:|
+| Codex | Three cases covering partial payments, conflicting IDs and ambiguous references | 15/15 | 15/15 |
+| OpenCode with GPT-4.1 mini | One case with duplicate and conflicting payments | 1/5 | 5/5 |
+
+OpenCode initially held an entire €100 payment after spotting a duplicate. With the skill, it counted the payment once, applied €90 to the invoice and left €10 unapplied. Both replies wrapped the requested JSON in Markdown. After a delivery-instruction edit, a fresh assisted session returned directly parseable JSON and retained all five accounting points on the same case.
+
+The evaluators loaded the skill explicitly. Automatic selection when both `skill-creator` and `skill-repo-creator` are available is still untested. [Evaluation method](skills/skill-repo-creator/references/behavioral-evaluation.md)
 
 ## Inside the generated repository
 
